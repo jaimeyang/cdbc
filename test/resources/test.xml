@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mapping> 
+  <class name="user" table="true"> 
+    <property name="name"/>  
+    <property name="pwd"/>  
+    <property name="create_time"/> 
+  </class>  
+</mapping>
