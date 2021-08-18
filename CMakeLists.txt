@@ -12,20 +12,26 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 include_directories(lib)
 include_directories(core)
+include_directories(core/net)
+# libevent
+include_directories(lib/libevent/include)
 # spdlog
 include_directories(lib/spdlog/include)
 # protobuf
 include_directories(protobuf/auto)
-# include_directories(protobuf/include)
 
-set(SOURCE_FILES core/xml/XmlParse.cpp)
+set(SOURCE_FILES core/xml/XmlParse.cpp
+                 core/net/NetWork.cpp)
 
 set(TEST_SRC test/src/xml/TestXml.cpp
-             protobuf/auto/TestReflect.pb.cc)
+             protobuf/auto/TestReflect.pb.cc
+             test/src/mysql/TestProtocol.cpp
+             test/src/reflect/TestReflect.cpp)
              
 # spdlog
 link_directories(lib/spdlog/lib)
-# link_directories(protobuf/lib)
+# libevent
+link_directories(lib/libevent/lib)
 
 if (${IS_TEST} STREQUAL "ON")
     include_directories(lib/googletest/googletest/include)
@@ -38,7 +44,8 @@ add_executable(CDBC ${SOURCE_FILES})
 if (${IS_TEST} STREQUAL "ON")    
     target_link_libraries(CDBC gtest gtest_main)
     target_sources(CDBC PRIVATE ${TEST_SRC})
-    target_sources(CDBC PRIVATE gtestmain.cpp)
+    add_subdirectory(lib/googletest)
+    # target_sources(CDBC PRIVATE gtestmain.cpp)
 else()
     target_sources(CDBC PRIVATE main.cpp)
 endif ()
@@ -46,5 +53,10 @@ endif ()
 target_link_libraries(CDBC spdlog)
 target_link_libraries(CDBC pthread)
 target_link_libraries(CDBC protobuf)
+target_link_libraries(CDBC event_core)
+target_link_libraries(CDBC event)
+target_link_libraries(CDBC event_extra)
+target_link_libraries(CDBC event_pthreads)
+
 
 # add_executable(CDBC main.cpp)
